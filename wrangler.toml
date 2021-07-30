@@ -1,7 +1,11 @@
 name = "devnet-sgforms-worker"
 type = "javascript"
 
-account_id = ""
+account_id = "149f3f176965c9f84fb12b9a9d5db590"
 workers_dev = true
 route = ""
 zone_id = ""
+
+# [secrets]
+# FORM_KEY
+# TEST_FORM_KEY
