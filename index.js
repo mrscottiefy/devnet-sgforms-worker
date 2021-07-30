@@ -1,4 +1,9 @@
-const webhookUrl = "https://hooks.slack.com/services/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"
+const formsg = require('@opengovsg/formsg-sdk')({
+  mode: 'production',
+})
+const slackWebHookUrl = "https://hooks.slack.com/services/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"
+const formSecretKey  = `${FORM_KEY}`
+const HAS_ATTACHMENTS = false
 
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
@@ -45,6 +50,7 @@ async function handleRequest(request) {
 }
 
 async function processRequest(request){
+  console.log(request.headers)
   const options = {
     method: 'POST',
     headers: {
@@ -52,9 +58,21 @@ async function processRequest(request){
     },
     body: JSON.stringify(
       { 
-        "text": await readRequestBody(request)
+        "text": await decryptRequest(request)
       }
     )
   }
-  return await fetch(webhookUrl,options);
+  return await fetch(slackWebHookUrl,options);
+}
+
+async function decryptRequest(request){
+
+  const submission = HAS_ATTACHMENTS ? await formsg.crypto.decryptWithAttachments(formSecretKey, request) : formsg.crypto.decrypt(formSecretKey, request)
+
+  if (submission) {
+    return readRequestBody(submission);
+  } else {
+    return "Could not decrypt the submission"
+  }
+
 }
