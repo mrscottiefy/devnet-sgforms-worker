@@ -1,5 +1,5 @@
 name = "devnet-sgforms-worker"
-type = "javascript"
+type = "webpack"
 
 account_id = "149f3f176965c9f84fb12b9a9d5db590"
 workers_dev = true
@@ -9,4 +9,5 @@ zone_id = ""
 # [secrets]
 # FORM_KEY
 # FORM_ID
+# POST_URL
 # TEST_FORM_KEY
