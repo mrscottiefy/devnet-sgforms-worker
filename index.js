@@ -52,12 +52,17 @@ async function handleRequest(request) {
 
 async function processRequest(request){
    //* Logging
-  // sendSlackString("processRequest: " + JSON.stringify(request));
+  // await sendSlackString("processRequest: " + JSON.stringify(request));
   let decryptedRequest = await decryptRequest(request)
-  // let filteredText = await filterRequest(decryptedRequest)
-  if (decryptedRequest){
+ 
+  //* Logging
+  // await sendSlackString("decryptedRequest: " + JSON.stringify(decryptedRequest));
+
+  let filteredText = (decryptedRequest && decryptedRequest.responses.length)  ? await filterRequest(decryptedRequest.responses) : ""
+
+  if (decryptedRequest && filteredText){
     //* Logging
-    sendSlackString("decryptedResponse: " + JSON.stringify(decryptedRequest));
+    // sendSlackString("decryptedResponse: " + JSON.stringify(decryptedRequest));
       const options = {
       method: 'POST',
       headers: {
@@ -65,7 +70,7 @@ async function processRequest(request){
       },
       body: JSON.stringify(
         { 
-          "text": decryptedRequest
+          "text": filteredText.toString()
         }
       )
     }
@@ -106,14 +111,13 @@ async function sendSlackString(text) {
 /* 
 @response is an array of objects 
 */
-// async function filterRequest(response){
-//   let answers = await response.filter((q) => {
-//     return q.answer != ""
-//   })
-//   let text = ""
-//   answers.forEach(qna => {
-//     text += qna.question + ": " + qna.answer + `\n`
-//   });
-
-//   return text
-// }
+async function filterRequest(response){
+  let answers = await response.filter((q) => {
+    return q.answer != ""
+  })
+  let text = ""
+  answers.forEach(qna => {
+    text += qna.question + ": " + qna.answer + `\n`
+  });
+  return text
+}
